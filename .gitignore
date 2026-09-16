@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Personal data 
+data.json
+*.db
+*.sqlite
+*.sqlite3
+*.csv
+*.xlsx
+
+# env files
+.env
+.env.*
+!.env.example
+
+# Backups and exports
+*.bak
+*.backup
+exports/
+backups/
+
+# System files
+.DS_Store
+Thumbs.db

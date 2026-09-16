@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parcours — suivi de candidatures</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div id="app">
+  <aside class="sidebar">
+    <div class="brand">Parcours<span>suivi de candidatures</span></div>
+    <nav class="mainnav">
+      <button class="navbtn" data-view="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 18l5-8 4 5 4-9 5 12"/><circle cx="8" cy="10" r="1"/><circle cx="12" cy="15" r="1"/><circle cx="16" cy="6" r="1"/></svg>
+        Mon parcours
+      </button>
+      <button class="navbtn" data-view="list">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+        Candidatures
+      </button>
+    </nav>
+    <button class="addbtn" id="sidebar-add">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Ajouter une candidature
+    </button>
+    <div class="sidebar-note" id="server-status">Connexion au serveur…</div>
+  </aside>
+
+  <main class="content">
+
+    <section id="view-dashboard">
+      <div class="view-header">
+        <div>
+          <h1>Mon parcours</h1>
+          <p id="dash-subtitle"></p>
+        </div>
+      </div>
+
+      <div class="stat-strip" id="stat-row"></div>
+
+      <div class="journey-panel">
+        <div class="journey-head">
+          <div>
+            <h3>La trajectoire</h3>
+            <p>Chaque point est une candidature, placée dans le temps et selon l'étape atteinte.</p>
+          </div>
+          <div class="journey-legend" id="journey-legend"></div>
+        </div>
+        <div class="journey-svg-wrap" id="journey-chart"></div>
+      </div>
+
+      <div class="panel-grid">
+        <div class="panel">
+          <h3>Répartition par statut</h3>
+          <div class="donut-wrap" id="donut-wrap"></div>
+        </div>
+        <div class="panel">
+          <h3>Carnet de bord<small>Dernières mises à jour</small></h3>
+          <div id="recent-list"></div>
+        </div>
+      </div>
+
+      <div class="split-row">
+        <div class="panel">
+          <h3>Domaines les plus visés</h3>
+          <div id="domaine-bars"></div>
+        </div>
+        <div class="panel">
+          <h3>Villes les plus visées</h3>
+          <div id="ville-bars"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Rythme mensuel<small>6 derniers mois</small></h3>
+        <div id="month-chart"></div>
+      </div>
+    </section>
+
+    <section id="view-list" hidden>
+      <div class="view-header">
+        <div>
+          <h1>Candidatures</h1>
+          <p id="list-subtitle"></p>
+        </div>
+      </div>
+      <div class="toolbar">
+        <input type="search" id="search-input" placeholder="Rechercher une entreprise ou un poste…">
+        <select id="filter-statut"><option value="">Tous les statuts</option></select>
+        <select id="filter-domaine"><option value="">Tous les domaines</option></select>
+        <select id="filter-ville"><option value="">Toutes les villes</option></select>
+      </div>
+      <div id="list-container"></div>
+    </section>
+
+    <section id="view-form" hidden>
+      <div class="view-header">
+        <div>
+          <h1 id="form-title">Nouvelle candidature</h1>
+          <p>Les champs marqués d'un astérisque sont obligatoires.</p>
+        </div>
+      </div>
+      <div class="form-card">
+        <form id="candidature-form">
+          <input type="hidden" id="f-id">
+          <div class="field-grid">
+            <div class="field">
+              <label class="required" for="f-entreprise">Entreprise</label>
+              <input type="text" id="f-entreprise" required placeholder="Ex : Sonatrach">
+            </div>
+            <div class="field">
+              <label class="required" for="f-titre">Titre exact du poste</label>
+              <input type="text" id="f-titre" required placeholder="Ex : Ingénieur DevOps">
+            </div>
+            <div class="field">
+              <label for="f-ville">Ville</label>
+              <input type="text" id="f-ville" list="ville-list" placeholder="Ex : Alger">
+              <datalist id="ville-list"></datalist>
+            </div>
+            <div class="field">
+              <label for="f-domaine">Domaine</label>
+              <input type="text" id="f-domaine" list="domaine-list" placeholder="Ex : Informatique">
+              <datalist id="domaine-list"></datalist>
+            </div>
+            <div class="field">
+              <label for="f-statut">Statut</label>
+              <select id="f-statut"></select>
+            </div>
+            <div class="field">
+              <label for="f-date">Date de candidature</label>
+              <input type="date" id="f-date">
+            </div>
+            <div class="field">
+              <label for="f-source">Source de l'offre</label>
+              <input type="text" id="f-source" list="source-list" placeholder="Ex : LinkedIn, Indeed…">
+              <datalist id="source-list"></datalist>
+            </div>
+            <div class="field">
+              <label for="f-relance">Date de relance prévue</label>
+              <input type="date" id="f-relance">
+            </div>
+            <div class="field">
+              <label for="f-salaire">Rémunération (si connue)</label>
+              <input type="text" id="f-salaire" placeholder="Ex : 90 000 - 110 000 DZD">
+            </div>
+            <div class="field">
+              <label for="f-lien">Lien de l'offre</label>
+              <input type="url" id="f-lien" placeholder="https://…">
+            </div>
+            <div class="field full">
+              <label for="f-description">Description du poste</label>
+              <textarea id="f-description" class="desc" placeholder="Colle ici l'annonce complète, au cas où elle serait retirée plus tard…"></textarea>
+            </div>
+            <div class="field full">
+              <label for="f-notes">Notes personnelles</label>
+              <textarea id="f-notes" placeholder="Contact RH, retours d'entretien, points à préparer…"></textarea>
+            </div>
+          </div>
+          <div class="form-actions">
+            <div style="display:flex; gap:10px;">
+              <button type="submit" class="btn btn-primary">Enregistrer</button>
+              <button type="button" class="btn btn-ghost" id="cancel-form">Annuler</button>
+            </div>
+            <button type="button" class="btn btn-danger" id="delete-form" hidden>Supprimer la candidature</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+</div>
+<script src="/app.js"></script>
+</body>
+</html>
